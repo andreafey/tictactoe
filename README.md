@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-A Java-based Tic-Tac-Toe implementation.
+A Java-based Tic-Tac-Toe implementation. Requires Java 7.
 
 Usage
 
