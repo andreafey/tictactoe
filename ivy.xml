@@ -1,0 +1,7 @@
+<ivy-module version="2.0">
+    <info organisation="apache" module="tictactoe"/>
+    <dependencies>
+        <dependency org="com.google.guava" name="guava" rev="15.0"/>
+        <dependency org="junit" name="junit" rev="4.11"/>
+    </dependencies>
+</ivy-module>
