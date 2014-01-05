@@ -42,5 +42,9 @@ public class Move {
 	public int hashCode() {
 		return Objects.hashCode(row, col, player);
 	}
+	@Override
+	public Move clone() {
+		return new Move(row, col, player);
+	}
 
 }

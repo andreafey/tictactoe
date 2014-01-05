@@ -5,13 +5,23 @@ import java.util.Scanner;
 
 import com.google.common.base.Preconditions;
 
+import tictactoe.strategy.BlockingStrategy;
+import tictactoe.strategy.CenterStrategy;
+import tictactoe.strategy.CombinedStrategy;
+import tictactoe.strategy.CornerStrategy;
 import tictactoe.strategy.RandomStrategy;
 import tictactoe.strategy.Strategy;
+import tictactoe.strategy.WinningStrategy;
 
 public class TicTacToe {
 
 	public static void main(String[] args) {
-		Strategy strategy = new RandomStrategy();
+		Strategy strategy = new CombinedStrategy(
+				new WinningStrategy(),
+				new BlockingStrategy(),
+				new CenterStrategy(), 
+				new CornerStrategy(),
+				new RandomStrategy());
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Welcome to TicTacToe");
 		do {
@@ -27,7 +37,7 @@ public class TicTacToe {
 	public static void play(Board board, Strategy strategy, Scanner reader) {
 		Preconditions.checkArgument(board.getTurn()==Player.X);
 		// computer (X) goes first
-		Move move = strategy.getMove(board);
+		Move move = TicTacToeUtils.random(strategy.getMoves(board));
 		board.move(move);
 		// print board
 		System.out.println(board);

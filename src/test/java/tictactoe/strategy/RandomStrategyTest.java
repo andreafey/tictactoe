@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import tictactoe.Board;
 import tictactoe.Move;
+import tictactoe.TicTacToeUtils;
 
 public class RandomStrategyTest {
 
@@ -25,7 +26,7 @@ public class RandomStrategyTest {
 		
 		for (int i = 0; i<100; i++) {
 			Board board = new Board();
-			Move random = strategy.getMove(board);
+			Move random = TicTacToeUtils.random(strategy.getMoves(board));
 			// always Player.X
 			if (count.get(random) == null) {
 				count.put(random, 1);

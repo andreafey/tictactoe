@@ -50,15 +50,22 @@ public class Board {
 	 * @throws IllegalArgumentException if block not available or not player's turn
 	 */
 	public void move(Move move) {
+		move(move, false);
+	}
+	// TODO not liking this strategy-driven overload
+	public void move(Move move, boolean overrideTurn) {
+		// validate game is not already over
+		Preconditions.checkArgument(!isGameOver(), "Game already over");
 		// validate valid grid point
 		Preconditions.checkArgument(move.getRow()<SIZE && move.getCol()<SIZE, "Row/Col must each be <"+SIZE);
 		// validate the correct player is going
-		Preconditions.checkArgument(turn == move.getPlayer(), "Not your turn");
+		if (!overrideTurn) Preconditions.checkArgument(turn == move.getPlayer(), "Not your turn");
 		// validate the grid cell has not already been played
 		Preconditions.checkArgument(grid[move.getRow()][move.getCol()] == null, "Spot already taken");
 		grid[move.getRow()][move.getCol()] = move.getPlayer();
 		turn = move.getPlayer() == Player.X ? Player.O : Player.X;
 		count.increment(move.getPlayer());
+		
 	}
 	/**
 	 * Return true if the game has ended; either the board is full or someone has won
@@ -68,10 +75,14 @@ public class Board {
 		if (winner()!=null) return true;
 		else return isBoardFull();
 	}
+	/**
+	 * Determine whether a winner has been chosen; if so set it
+	 * @return the winning Player or null if one has not yet been determined
+	 */
 	public Player winner() {
 		if (winner==null) {
 			// optimize by validating enough moves have been played to have a possible winner
-			if (count.x<3) return null;
+			if (count.x < 3 && count.o < 3) return null;
 			// if a player has won, set winner
 			// see if either diagonal contains winners
 			Player[] diag1 = new Player[SIZE];
@@ -108,6 +119,11 @@ public class Board {
 		}
 		return winner;
 	}
+	/**
+	 * Return true if all members of the slice belong to the same player
+	 * @param slice The row/column/diagonal to consider
+	 * @return true if all members of the slice belong to the same player
+	 */
 	private boolean allSame(Player[] slice) {
 		Player head = slice[0];
 		if (head!=null) {
@@ -126,7 +142,10 @@ public class Board {
 	public Player getTurn() {
 		return turn;
 	}
-	
+	/**
+	 * Return a Collection<Move> which have not been played
+	 * @return Collection<Move> which have not been played
+	 */
 	public Collection<Move> availableMoves() {
 		Set<Move> moves = new HashSet<>();
 		for (int row = 0; row<SIZE; row++) {
@@ -135,6 +154,12 @@ public class Board {
 			}
 		}
 		return moves;
+	}
+	/**
+	 * Return the width of the square board
+	 */
+	public int size() {
+		return SIZE;
 	}
 	/**
 	 * Return true if board is full: there are no moves left to play
@@ -157,5 +182,18 @@ public class Board {
 			if (++row < SIZE) board += newLine+Strings.repeat("_", (SIZE*4))+newLine;
 		}
 		return board+newLine;
+	}
+	public Board clone() {
+		Board board = new Board();
+		board.turn = this.turn;
+		board.count.x = this.count.x;
+		board.count.o = this.count.o;
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (this.grid[i][j] != null) board.grid[i][j] = this.grid[i][j];
+			}
+		}
+		board.winner = this.winner;
+		return board;
 	}
 }

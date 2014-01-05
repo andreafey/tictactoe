@@ -1,21 +1,19 @@
 package tictactoe.strategy;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 import tictactoe.Board;
 import tictactoe.Move;
-import tictactoe.Player;
 
-import com.google.common.collect.Lists;
-
+/**
+ * Select any available move randomly
+ * @author andrea
+ */
 public class RandomStrategy implements Strategy {
 
 	@Override
-	public Move getMove(Board board) {
-		List<Move> moves = Lists.newArrayList(board.availableMoves());
-		Collections.shuffle(moves);
-		return moves.get(0);
+	public Collection<Move> getMoves(Board board) {
+		return board.availableMoves();
 	}
 
 }
