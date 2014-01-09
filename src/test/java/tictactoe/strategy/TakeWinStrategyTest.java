@@ -11,19 +11,19 @@ import tictactoe.Move;
 import tictactoe.Player;
 import tictactoe.TicTacToeUtils;
 
-public class WinningStrategyTest {
+public class TakeWinStrategyTest {
 
 	@Test
 	public void test() {
 		Board board = new Board();
-		Strategy strategy = new WinningStrategy();
+		Strategy strategy = new TakeWinStrategy();
 		Collection<Move> moves = strategy.getMoves(board);
 		assertEquals("don't expect any winning moves before anything played", 0, moves.size());
 		
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(0, 2, Player.O));
-		board.move(new Move(0, 0, Player.X));
-		board.move(new Move(1, 2, Player.O));
+		board.move(1, 1, Player.X);
+		board.move(0, 2, Player.O);
+		board.move(0, 0, Player.X);
+		board.move(1, 2, Player.O);
 //		  X |   | O 
 //		 ____________
 //		    | X | O  
@@ -35,7 +35,7 @@ public class WinningStrategyTest {
 		Move result = TicTacToeUtils.random(moves);
 		assertEquals("unexpected move", expected, result);
 		
-		board.move(result);
+		board.move(result.getRow(), result.getCol(), result.getPlayer());
 		assertTrue("game should be over", board.isGameOver());
 	}
 

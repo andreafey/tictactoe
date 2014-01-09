@@ -10,7 +10,7 @@ import tictactoe.Move;
  * Find moves which will allow Player to win on this turn
  * @author andrea
  */
-public class WinningStrategy implements Strategy {
+public class TakeWinStrategy implements Strategy {
 
 	@Override
 	public Collection<Move> getMoves(Board board) {
@@ -23,7 +23,7 @@ public class WinningStrategy implements Strategy {
 	}
 	private boolean isWinning(Move move, Board board) {
 		Board copy = board.clone();
-		copy.move(move);
+		copy.move(move.getRow(), move.getCol(), move.getPlayer());
 		return copy.isGameOver();
 	}
 

@@ -12,29 +12,29 @@ public class BoardTest {
 	public void testMove() {
 		Board board = new Board();
 		// valid move
-		board.move(new Move(0, 0, Player.X));
-		assertEquals(1, board.count.x);
-		assertEquals(0, board.count.o);
+		board.move(0, 0, Player.X);
+		assertEquals(1, TicTacToeUtils.movesPlayed(board, Player.X));
+		assertEquals(0, TicTacToeUtils.movesPlayed(board, Player.O));
 		// valid move
-		board.move(new Move(1, 0, Player.O));
-		assertEquals(1, board.count.x);
-		assertEquals(1, board.count.o);
+		board.move(1, 0, Player.O);
+		assertEquals(1, TicTacToeUtils.movesPlayed(board, Player.X));
+		assertEquals(1, TicTacToeUtils.movesPlayed(board, Player.O));
 	}
 	@Test (expected = IllegalArgumentException.class)
 	public void testMoveNotNull() {
 		Board board = new Board();
 		// valid move
-		board.move(new Move(0, 0, Player.X));
+		board.move(0, 0, Player.X);
 		// not valid (not null)
-		board.move(new Move(0, 0, Player.O));
+		board.move(0, 0, Player.O);
 	}
 	@Test (expected = IllegalArgumentException.class)
 	public void testMoveOutOfTurn() {
 		Board board = new Board();
 		// valid move
-		board.move(new Move(0, 0, Player.X));
+		board.move(0, 0, Player.X);
 		// not valid (out of turn)
-		board.move(new Move(0, 1, Player.X));
+		board.move(0, 1, Player.X);
 	}
 
 	@Test
@@ -100,59 +100,71 @@ public class BoardTest {
 		moves = board.availableMoves();
 		assertEquals(9, moves.size());
 	}
+	
+	@Test
+	public void testAvailableSquares() {
+		Board board = nearStalemate();
+		Collection<Square> squares = board.availableSquares();
+		assertEquals(1, squares.size());
+		assertTrue(squares.contains(new Square(2, 2)));
+		
+		board = new Board();
+		squares = board.availableSquares();
+		assertEquals(9, squares.size());
+	}
 
 	private Board stalemate() {
 		Board board = nearStalemate();
-		board.move(new Move(2, 2, Player.X));
+		board.move(2, 2, Player.X);
 		return board;
 	}
 	private Board nearStalemate() {
 		Board board = new Board();
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(0, 0, Player.O));
-		board.move(new Move(1, 0, Player.X));
-		board.move(new Move(1, 2, Player.O));
-		board.move(new Move(0, 1, Player.X));
-		board.move(new Move(2, 1, Player.O));
-		board.move(new Move(2, 0, Player.X));
-		board.move(new Move(0, 2, Player.O));
+		board.move(1, 1, Player.X);
+		board.move(0, 0, Player.O);
+		board.move(1, 0, Player.X);
+		board.move(1, 2, Player.O);
+		board.move(0, 1, Player.X);
+		board.move(2, 1, Player.O);
+		board.move(2, 0, Player.X);
+		board.move(0, 2, Player.O);
 		return board;
 	}
 	private Board xWinsDiag1() {
 		Board board = new Board();
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(0, 2, Player.O));
-		board.move(new Move(0, 0, Player.X));
-		board.move(new Move(2, 1, Player.O));
-		board.move(new Move(2, 2, Player.X));
+		board.move(1, 1, Player.X);
+		board.move(0, 2, Player.O);
+		board.move(0, 0, Player.X);
+		board.move(2, 1, Player.O);
+		board.move(2, 2, Player.X);
 		return board;
 	}
 	private Board oWinsDiag2() {
 		Board board = new Board();
-		board.move(new Move(0, 1, Player.X));
-		board.move(new Move(0, 2, Player.O));
-		board.move(new Move(1, 0, Player.X));
-		board.move(new Move(1, 1, Player.O));
-		board.move(new Move(2, 2, Player.X));
-		board.move(new Move(2, 0, Player.O));
+		board.move(0, 1, Player.X);
+		board.move(0, 2, Player.O);
+		board.move(1, 0, Player.X);
+		board.move(1, 1, Player.O);
+		board.move(2, 2, Player.X);
+		board.move(2, 0, Player.O);
 		return board;
 	}
 	private Board xWinsRow() {
 		Board board = new Board();
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(0, 2, Player.O));
-		board.move(new Move(1, 0, Player.X));
-		board.move(new Move(2, 1, Player.O));
-		board.move(new Move(1, 2, Player.X));
+		board.move(1, 1, Player.X);
+		board.move(0, 2, Player.O);
+		board.move(1, 0, Player.X);
+		board.move(2, 1, Player.O);
+		board.move(1, 2, Player.X);
 		return board;
 	}
 	private Board xWinsCol() {
 		Board board = new Board();
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(2, 0, Player.O));
-		board.move(new Move(0, 1, Player.X));
-		board.move(new Move(1, 2, Player.O));
-		board.move(new Move(2, 1, Player.X));
+		board.move(1, 1, Player.X);
+		board.move(2, 0, Player.O);
+		board.move(0, 1, Player.X);
+		board.move(1, 2, Player.O);
+		board.move(2, 1, Player.X);
 		return board;
 	}
 

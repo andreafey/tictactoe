@@ -11,13 +11,13 @@ import tictactoe.strategy.CombinedStrategy;
 import tictactoe.strategy.CornerStrategy;
 import tictactoe.strategy.RandomStrategy;
 import tictactoe.strategy.Strategy;
-import tictactoe.strategy.WinningStrategy;
+import tictactoe.strategy.TakeWinStrategy;
 
 public class TicTacToe {
 
 	public static void main(String[] args) {
 		Strategy strategy = new CombinedStrategy(
-				new WinningStrategy(),
+				new TakeWinStrategy(),
 				new BlockingStrategy(),
 				new CenterStrategy(), 
 				new CornerStrategy(),
@@ -38,7 +38,7 @@ public class TicTacToe {
 		Preconditions.checkArgument(board.getTurn()==Player.X);
 		// computer (X) goes first
 		Move move = TicTacToeUtils.random(strategy.getMoves(board));
-		board.move(move);
+		board.move(move.getRow(), move.getCol(), move.getPlayer());
 		// print board
 		System.out.println(board);
 		// if game over print winner and exit
@@ -76,7 +76,7 @@ public class TicTacToe {
 			moveUser(board, reader);
 		}
 		try {
-			board.move(new Move(row, col, Player.O));
+			board.move(row, col, Player.O);
 		} catch(IllegalArgumentException e) {
 			System.out.println("Not a valid move");
 			moveUser(board, reader);

@@ -1,7 +1,9 @@
 package tictactoe;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
@@ -12,23 +14,6 @@ public class Board {
 	private Player[][] grid;
 	private Player turn;
 	private Player winner;
-	Count count;
-
-	// keep track of moves 
-	class Count {
-		int x = 0;
-		int o = 0;
-		void increment(Player player) {
-			switch(player) {
-			case X:
-				x++;
-				break;
-			case O:
-				o++;
-				break;
-			}
-		}
-	}
 	
 	public Board() {
 		grid = new Player[SIZE][SIZE];
@@ -39,33 +24,29 @@ public class Board {
 		}
 		winner = null;
 		turn = Player.X;
-		count = new Count();
 	}
 	
 	/**
 	 * Player moves to grid point if allowed
 	 * @param row the row to play
 	 * @param col the col to play
-	 * @param player the player who plays
 	 * @throws IllegalArgumentException if block not available or not player's turn
 	 */
-	public void move(Move move) {
-		move(move, false);
+	public void move(int row, int col, Player player) {
+		move(row, col, player, false);
 	}
 	// TODO not liking this strategy-driven overload
-	public void move(Move move, boolean overrideTurn) {
+	public void move(int row, int col, Player player, boolean overrideTurn) {
 		// validate game is not already over
 		Preconditions.checkArgument(!isGameOver(), "Game already over");
 		// validate valid grid point
-		Preconditions.checkArgument(move.getRow()<SIZE && move.getCol()<SIZE, "Row/Col must each be <"+SIZE);
+		Preconditions.checkArgument(row<SIZE && col<SIZE, "Row/Col must each be <"+SIZE);
 		// validate the correct player is going
-		if (!overrideTurn) Preconditions.checkArgument(turn == move.getPlayer(), "Not your turn");
+		if (!overrideTurn) Preconditions.checkArgument(turn == player, "Not your turn");
 		// validate the grid cell has not already been played
-		Preconditions.checkArgument(grid[move.getRow()][move.getCol()] == null, "Spot already taken");
-		grid[move.getRow()][move.getCol()] = move.getPlayer();
-		turn = move.getPlayer() == Player.X ? Player.O : Player.X;
-		count.increment(move.getPlayer());
-		
+		Preconditions.checkArgument(grid[row][col] == null, "Spot already taken");
+		grid[row][col] = player;
+		turn = player == Player.X ? Player.O : Player.X;
 	}
 	/**
 	 * Return true if the game has ended; either the board is full or someone has won
@@ -81,8 +62,6 @@ public class Board {
 	 */
 	public Player winner() {
 		if (winner==null) {
-			// optimize by validating enough moves have been played to have a possible winner
-			if (count.x < 3 && count.o < 3) return null;
 			// if a player has won, set winner
 			// see if either diagonal contains winners
 			Player[] diag1 = new Player[SIZE];
@@ -156,6 +135,35 @@ public class Board {
 		return moves;
 	}
 	/**
+	 * Return a Collection<Square> which have not been played
+	 * @return Collection<Square> which have not been played
+	 */
+	public Collection<Square> availableSquares() {
+		Set<Square> squares = new HashSet<>();
+		for (int row = 0; row<SIZE; row++) {
+			for (int col = 0; col<SIZE; col++) {
+				if (grid[row][col] == null) squares.add(new Square(row, col));
+			}
+		}
+		return squares;
+	}
+	/**
+	 * Return a Map<Square,Player> of moves played
+	 * @return moves played
+	 */
+	public Map<Square, Player> squaresPlayed() {
+		Map<Square,Player> map = new HashMap<>();
+		for (int i=0; i<SIZE; i++) {
+			for (int j=0; j<SIZE; j++) {
+				if (grid[i][j] != null) {
+					map.put(new Square(i, j), grid[i][j]);
+				}
+			}
+		}
+		return map;
+	}
+
+	/**
 	 * Return the width of the square board
 	 */
 	public int size() {
@@ -166,7 +174,7 @@ public class Board {
 	 * @return true if board is full
 	 */
 	private boolean isBoardFull() {
-		return SIZE * SIZE == count.x + count.o;
+		return availableSquares().size() == 0;
 	}
 	
 	@Override
@@ -186,8 +194,6 @@ public class Board {
 	public Board clone() {
 		Board board = new Board();
 		board.turn = this.turn;
-		board.count.x = this.count.x;
-		board.count.o = this.count.o;
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
 				if (this.grid[i][j] != null) board.grid[i][j] = this.grid[i][j];

@@ -19,8 +19,8 @@ public class CenterStrategyTest {
 		Collection<Move> moves = strategy.getMoves(board);
 		assertEquals("expect exactly one move - the center", 1, moves.size());
 		
-		
-		board.move(TicTacToeUtils.random(moves));
+		Move move = TicTacToeUtils.random(moves);
+		board.move(move.getRow(), move.getCol(), move.getPlayer());
 		moves = strategy.getMoves(board);
 		assertEquals("no center moves left", 0, moves.size());
 	}

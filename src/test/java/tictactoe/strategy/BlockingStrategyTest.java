@@ -20,9 +20,9 @@ public class BlockingStrategyTest {
 		Collection<Move> moves = strategy.getMoves(board);
 		assertEquals("don't expect any blocking moves before anything played", 0, moves.size());
 		
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(1, 0, Player.O));
-		board.move(new Move(0, 0, Player.X));
+		board.move(1, 1, Player.X);
+		board.move(1, 0, Player.O);
+		board.move(0, 0, Player.X);
 //		  X |   |   
 //		 ____________
 //		  O | X |   
@@ -35,10 +35,10 @@ public class BlockingStrategyTest {
 		assertEquals("unexpected move", expected, TicTacToeUtils.random(moves));
 		
 		board = new Board();
-		board.move(new Move(2, 2, Player.X));
-		board.move(new Move(0, 0, Player.O));
-		board.move(new Move(1, 1, Player.X));
-		board.move(new Move(0, 1, Player.O));
+		board.move(2, 2, Player.X);
+		board.move(0, 0, Player.O);
+		board.move(1, 1, Player.X);
+		board.move(0, 1, Player.O);
 //		  O | O |   
 //		 ____________
 //		    | X |   

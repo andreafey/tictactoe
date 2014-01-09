@@ -30,7 +30,7 @@ public class BlockingStrategy implements Strategy {
 	private boolean isBlocking(Move move, Board board) {
 		// reverse the board to test the opponent's move
 		Board copy = board.clone();
-		copy.move(new Move(move.getRow(), move.getCol(), move.getPlayer().opponent()), true);
+		copy.move(move.getRow(), move.getCol(), move.getPlayer().opponent(), true);
 		return copy.isGameOver();
 	}
 
