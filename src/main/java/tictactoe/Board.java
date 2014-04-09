@@ -1,5 +1,6 @@
 package tictactoe;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 public class Board {
 	private static final int SIZE = 3;
@@ -17,11 +21,8 @@ public class Board {
 	
 	public Board() {
 		grid = new Player[SIZE][SIZE];
-		for (int row = 0; row<SIZE; row++) {
-			for (int col = 0; col<SIZE; col++) {
-				grid[row][col] = null;
-			}
-		}
+		for (Player[] row : grid)
+			Arrays.fill(row, null);
 		winner = null;
 		turn = Player.X;
 	}
@@ -104,15 +105,10 @@ public class Board {
 	 * @return true if all members of the slice belong to the same player
 	 */
 	private boolean allSame(Player[] slice) {
-		Player head = slice[0];
-		if (head!=null) {
-			for (int i = 1; i<SIZE; i++) {
-				if (!head.equals(slice[i])) return false;
-			}
-			return true;
-		} else {
-			return false;
-		}
+		Collection<Player> notnull = 
+				Collections2.filter(Arrays.asList(slice), Predicates.notNull());
+		return notnull.size() == slice.length && 
+				Iterables.all(notnull, Predicates.equalTo(slice[0]));
 	}
 	/**
 	 * Return the player whose turn it is
@@ -127,11 +123,8 @@ public class Board {
 	 */
 	public Collection<Move> availableMoves() {
 		Set<Move> moves = new HashSet<>();
-		for (int row = 0; row<SIZE; row++) {
-			for (int col = 0; col<SIZE; col++) {
-				if (grid[row][col] == null) moves.add(new Move(row, col, turn));
-			}
-		}
+		for (Square square : availableSquares())
+			moves.add(new Move(square.getRow(), square.getCol(), turn));
 		return moves;
 	}
 	/**

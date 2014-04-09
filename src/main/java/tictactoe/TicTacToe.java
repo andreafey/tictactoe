@@ -70,13 +70,13 @@ public class TicTacToe {
 		try {
 			row = reader.nextInt();
 			col = reader.nextInt();
+			board.move(row, col, Player.O);
 		} catch (InputMismatchException e) {
 			System.out.println("Please enter ints");
 			reader.nextLine(); // toss the input
 			moveUser(board, reader);
-		}
-		try {
-			board.move(row, col, Player.O);
+			// without this return not actually exiting after recall
+			//return;
 		} catch(IllegalArgumentException e) {
 			System.out.println("Not a valid move");
 			moveUser(board, reader);
