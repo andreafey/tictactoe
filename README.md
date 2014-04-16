@@ -11,7 +11,7 @@ knowledge of tic-tac-toe strategy, but who is? Requires Java 7.
     tictactoe$ ant compile
     tictactoe$ java -cp lib/*:bin tictactoe.TicTacToe
 
-Play a move by entering <ROW> <COL>.
+Play a move by entering ROW COL.
 
 ## Sample Game Play
 ```
