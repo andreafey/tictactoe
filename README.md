@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.org/andreafey/tictactoe.svg)](https://travis-ci.org/andreafey/tictactoe)
 
-# Tic-Tac-Toe
+# Tic Tac Toe
 
-This is a single-player interactive console Tic-Tac-Toe game which I wrote in Java for my Hacker School application. While fairly unsophisticated, it uses several strategies in combination to avoid loss and take a win when presented the opportunity. It is not likely to win against a player with 
-knowledge of tic-tac-toe strategy, but who is? Requires Java 7.
+This is a single-player interactive console Tic Tac Toe game which I wrote in Java for my Hacker School application. While fairly unsophisticated, it uses several strategies in combination to avoid loss and take a win when presented the opportunity. Requires Java 7.
 
 ## Usage
 
