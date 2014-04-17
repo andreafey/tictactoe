@@ -1,93 +1,94 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="tic-tac-toe" default="compile">
-	<property name="java.dir" location="src/main/java"/>
-	<property name="classes.dir" location="bin"/>
-	<property name="test.dir" location="src/test/java"/>
-	<property name="lib.dir" location="lib"/>
-	<property name="dist.dir" location="dist"/>
-	<path id="lib.path">
-		<fileset dir="${lib.dir}">
-		    <include name="*.jar"/>
-		</fileset>
-	</path>
+    <property name="java.dir" location="src/main/java"/>
+    <property name="classes.dir" location="bin"/>
+    <property name="test.dir" location="src/test/java"/>
+    <property name="lib.dir" location="lib"/>
+    <property name="dist.dir" location="dist"/>
+    <path id="lib.path">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 
     <!-- ================================= 
           targets: compile, compile-tests           
          ================================= -->
     <target name="compile" depends="resolve">
-    	<mkdir dir="${classes.dir}"/>
-        <javac includeantruntime="false" srcdir="${java.dir}" destdir="${classes.dir}">
-        	<classpath refid="lib.path"/>
+        <mkdir dir="${classes.dir}"/>
+        <javac includeantruntime="false" srcdir="${java.dir}" destdir="${classes.dir}" classpathref="lib.path"/>
+    </target>
+    
+    <target name="compile-tests" depends="compile">
+        <javac includeantruntime="false" srcdir="${test.dir}" destdir="${classes.dir}">
+            <classpath refid="lib.path"/>
         </javac>
-	</target>
-	
-	<target name="compile-tests" depends="compile">
-		<javac includeantruntime="false" srcdir="${test.dir}" destdir="${classes.dir}"/>
-	</target>
+    </target>
 
     <!-- ================================= 
           target: clean              
          ================================= -->
-	<target name="clean">
-		<delete dir="${lib.dir}"/>
-		<delete dir="${classes.dir}"/>
-		<delete dir="${dist.dir}"/>
-	</target>
+    <target name="clean">
+        <delete dir="${lib.dir}"/>
+        <delete dir="${classes.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
     <!-- ================================= 
           target: dist              
          ================================= -->
-	<target name="dist" depends="test" description="create a distribution jar">
-		<mkdir dir="${dist.dir}"/>
-		<jar jarfile="${dist.dir}/tictactoe.jar" basedir="${classes.dir}">
-		    <manifest>
-		    	<attribute name="Created-By" value="Andrea Fey"/>
-		    </manifest>
-		</jar>
-	</target>
-	
+    <target name="dist" depends="test" description="create a distribution jar">
+        <mkdir dir="${dist.dir}"/>
+        <jar jarfile="${dist.dir}/tictactoe.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Created-By" value="Andrea Fey"/>
+            </manifest>
+        </jar>
+    </target>
+    
     <!-- ================================= 
           target: run-tests              
          ================================= -->
     <target name="test" depends="compile-tests" description="run JUnit tests">
-   		<mkdir dir="reports/junit"/>
-    	<junit>
-    		<classpath refid="lib.path"/>
-    		<classpath refid="ivy.path"/>
-    		<classpath location="${classes.dir}"/>
-    		<formatter type="xml"/>
-    		<batchtest todir="reports/junit">
-    			<fileset dir="${classes.dir}" includes="**/*Test*"/>
-    		</batchtest>
-    	</junit>
+        <mkdir dir="reports/junit"/>
+        <junit>
+            <classpath refid="lib.path"/>
+            <classpath refid="ivy.path"/>
+            <classpath location="${classes.dir}"/>
+            <formatter type="xml"/>
+            <batchtest todir="reports/junit">
+                <fileset dir="${classes.dir}" includes="**/*Test*"/>
+            </batchtest>
+        </junit>
     </target>
 
     <!-- ================================= 
           target: run              
          ================================= -->
     <target name="run" depends="compile" description="play Tic-Tac-Toe from the Ant build">
-    	<java classname="tictactoe.TicTacToe" classpathref="ivy.path">
-    		<classpath location="${classes.dir}"/>
-  		</java>
+        <java classname="tictactoe.TicTacToe" classpathref="ivy.path">
+            <classpath location="${classes.dir}"/>
+        </java>
     </target>
     
     <!-- ================================= 
           Ivy targets              
          ================================= -->
     <target name="resolve" depends="install-ivy" description="retrieve dependencies (requires ivy.jar on the classpath)">
+        <ivy:resolve/>
         <ivy:retrieve/>
-    	<ivy:cachepath pathid="ivy.path"/>
+        <ivy:cachepath pathid="ivy.path"/>
     </target>
-	
-	<target name="install-ivy" depends="download-ivy" description="add Ivy taskdefs to Ant">
-	    <taskdef classpathref="lib.path" resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${lib.dir}"/>
-	</target>
-	
-	<target name="check-ivy" description="checks whether ivy.jar has already been downloaded">
-	    <available file="${lib.dir}/ivy.jar" property="skip.download"/>
-	</target>
+    
+    <target name="install-ivy" depends="download-ivy" description="add Ivy taskdefs to Ant">
+        <taskdef classpathref="lib.path" resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${lib.dir}"/>
+    </target>
+    
+    <target name="check-ivy" description="checks whether ivy.jar has already been downloaded">
+        <available file="${lib.dir}/ivy.jar" property="skip.download"/>
+    </target>
 
     <target name="download-ivy" depends="check-ivy" unless="skip.download" description="download ivy.jar">
         <mkdir dir="lib"/>
-    	<get dest="lib/ivy.jar" 
-    	     src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar"/>
+        <get dest="lib/ivy.jar" 
+             src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar"/>
     </target>
 </project>
